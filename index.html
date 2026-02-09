@@ -5,39 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Black & White Shop</title>
 
-    <!-- [ULTIMATE PROTECTION BLOCK START] -->
+    <!-- [SECURITY BLOCK] -->
     <script>
         (function() {
-            const _0xRedirectUrl = "https://www.google.com";
-
-            // ১. মাউসের রাইট ক্লিক এবং টেক্সট সিলেকশন ব্লক
+            // কোনো ডোমেইন চেক নেই, তাই রিডাইরেক্ট হবে না
+            
+            // মাউসের রাইট ক্লিক ব্লক
             document.addEventListener('contextmenu', e => e.preventDefault());
-            document.onselectstart = function() { return false; };
-
-            // ২. কিবোর্ড শর্টকাট ব্লক (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
+            
+            // কিবোর্ড শর্টকাট ব্লক (F12, Ctrl+U ইত্যাদি)
             document.onkeydown = function(e) {
                 if (e.keyCode == 123 || 
                    (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67) || e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80))) {
-                    window.location.replace(_0xRedirectUrl);
                     return false;
                 }
             };
 
-            // ৩. দেব-টুলস ডিটেকশন (ইন্সপেক্ট খোলার চেষ্টা করলে রিডাইরেক্ট)
-            setInterval(function() {
-                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
-                    window.location.replace(_0xRedirectUrl);
-                }
-                
-                const devtools = /./;
-                devtools.toString = function() {
-                    window.location.replace(_0xRedirectUrl);
-                };
-                console.log('%c', devtools);
-            }, 1000);
+            // টেক্সট সিলেকশন ব্লক
+            document.onselectstart = function() { return false; };
         })();
     </script>
-    <!-- [ULTIMATE PROTECTION BLOCK END] -->
+    <!-- [SECURITY BLOCK END] -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -264,7 +252,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Config (Base64 Encoded for light protection)
         const _0xcf = {
             a: atob("QUl6YVN5Q1Q2YzNGemVIdzdxQS02LXFkYVlYNGljUlhlUmVRSFA4"), 
             b: atob("c3ViZmxpeGJkLTlkNzRiLmZpcmViYXNlYXBwLmNvbQ=="), 
@@ -286,7 +273,6 @@
         let currentRating = 5;
         let selectedVariants = {};
 
-        // Load Settings
         db.collection("settings").doc("app_info").onSnapshot(doc => {
             if(doc.exists) {
                 appSettings = doc.data();
@@ -299,7 +285,6 @@
             }
         });
 
-        // Product Rendering
         function renderItem(p, id) {
             const list = document.getElementById('productList');
             const variants = p.variants || [{time: "একক", price: p.price || 0}];
@@ -334,7 +319,6 @@
             snapshot.forEach(doc => renderItem(doc.data(), doc.id));
         });
 
-        // Review Logic
         function loadReviews() {
             db.collection("reviews").where("status", "==", "approved").onSnapshot(ss => {
                 const list = document.getElementById('reviewList');
@@ -398,7 +382,6 @@
             }
         }
 
-        // Buy & Pay Logic
         function selectVariant(prodId, index, price) {
             document.querySelectorAll(`[id^="v-${prodId}-"]`).forEach(el => el.classList.remove('active'));
             document.getElementById(`v-${prodId}-${index}`).classList.add('active');
@@ -440,7 +423,9 @@
             document.querySelectorAll('.pay-method-icon').forEach(img => img.classList.remove('selected'));
             document.getElementById(`${method}_img`).classList.add('selected');
             document.getElementById('numberBox').classList.remove('hidden');
-            document.getElementById('methodName').innerText = method === 'bkash' ? 'বিকাশ পার্সোনাল' : 'নগদ পার্সোনাল';
+            
+            let methodLabel = method === 'bkash' ? 'বিকাশ পার্সোনাল' : 'নগদ পার্সোনাল';
+            document.getElementById('methodName').innerText = methodLabel;
             document.getElementById('displayNo').innerText = appSettings[method + '_no'] || "01XXXXXXXXX";
             document.getElementById('copyMsg').classList.add('opacity-0');
         }
@@ -468,7 +453,6 @@
             } catch (e) { alert(e.message); }
         }
 
-        // Section Navigation
         function showSec(id) {
             document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
             document.getElementById(`${id}-sec`).classList.remove('hidden');
@@ -482,10 +466,22 @@
 
         function toggleAuth(view) {
             isLoginView = view;
-            document.getElementById('authTitle').innerText = isLoginView ? "লগইন" : "রেজিস্ট্রেশন";
-            document.getElementById('authBtn').innerText = isLoginView ? "লগইন করুন" : "রেজিস্ট্রেশন করুন";
-            document.getElementById('regName').classList.toggle('hidden', isLoginView);
-            document.getElementById('toggleText').innerText = isLoginView ? "একাউন্ট নেই? রেজিস্ট্রেশন করুন" : "একাউন্ট আছে? লগইন করুন";
+            const title = document.getElementById('authTitle');
+            const toggleText = document.getElementById('toggleText');
+            const btn = document.getElementById('authBtn');
+            const nameInput = document.getElementById('regName');
+
+            if(isLoginView) {
+                title.innerText = "লগইন";
+                toggleText.innerText = "একাউন্ট নেই? রেজিস্ট্রেশন করুন";
+                btn.innerText = "লগইন করুন";
+                nameInput.classList.add('hidden');
+            } else {
+                title.innerText = "রেজিস্ট্রেশন";
+                toggleText.innerText = "একাউন্ট আছে? লগইন করুন";
+                btn.innerText = "রেজিস্ট্রেশন করুন";
+                nameInput.classList.remove('hidden');
+            }
         }
 
         async function processAuth() {
