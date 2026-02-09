@@ -5,59 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Black & White Shop</title>
 
-    <!-- [ULTIMATE PRO-SECURITY BLOCK START] -->
+    <!-- [ULTIMATE SECURITY BLOCK START] -->
     <script>
         (function() {
-            // ১. নির্দিষ্ট লিংক ও ডোমেইন সুরক্ষা (Path Lock)
-            const _targetHost = "subflixbd.github.io";
-            const _targetPath = "/SubflixBD"; 
-            const _safetyUrl = "https://www.google.com";
+            // ১. ডোমেইন সুরক্ষা (শুধুমাত্র subflixbd.github.io তে চলবে)
+            const _0xAllowedHost = "subflixbd.github.io";
+            const _0xRedirectUrl = "https://www.google.com";
 
-            function checkEnvironment() {
-                const currentHost = window.location.hostname;
-                const currentPath = window.location.pathname;
-
-                // ডোমেইন এবং পাথ চেক
-                if (currentHost !== _targetHost || !currentPath.includes(_targetPath)) {
-                    if (currentHost !== "localhost" && currentHost !== "127.0.0.1") {
-                        window.location.replace(_safetyUrl);
-                    }
-                }
+            if (window.location.hostname !== _0xAllowedHost && window.location.hostname !== "localhost") {
+                window.location.replace(_0xRedirectUrl);
             }
-            checkEnvironment();
 
-            // ২. মাউস ও কিবোর্ড পুরোপুরি অফ (Off)
-            document.addEventListener('contextmenu', e => e.preventDefault()); // রাইট ক্লিক অফ
-            
+            // ২. কিবোর্ড শর্টকাট ব্লক (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
+            document.addEventListener('contextmenu', e => e.preventDefault());
             document.onkeydown = function(e) {
-                // F12, Ctrl+U, Ctrl+S, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+A সব ব্লক
                 if (e.keyCode == 123 || 
-                   (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
-                    e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80 || e.keyCode == 65)) {
-                    window.location.replace(_safetyUrl);
+                   (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67) || e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80))) {
+                    window.location.replace(_0xRedirectUrl);
                     return false;
                 }
             };
 
-            // ৩. প্রো-লেভেল দেব-টুলস প্রোটেকশন (Anti-Debugger)
+            // ৩. দেব-টুলস ডিটেকশন
             setInterval(function() {
-                // ইন্সপেক্ট ডিটেকশন
+                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+                    window.location.replace(_0xRedirectUrl);
+                }
+                
                 const devtools = /./;
                 devtools.toString = function() {
-                    window.location.replace(_safetyUrl);
+                    window.location.replace(_0xRedirectUrl);
                 };
                 console.log('%c', devtools);
-                
-                // ডিবাগার লুপ (প্রো ইউজারদের জন্য)
-                (function() {}.constructor('debugger')());
             }, 1000);
 
-            // ৪. টেক্সট সিলেকশন ও ড্র্যাগিং ব্লক
+            // ৪. টেক্সট সিলেকশন ব্লক
             document.onselectstart = function() { return false; };
-            document.ondragstart = function() { return false; };
         })();
     </script>
-    <!-- [ULTIMATE PRO-SECURITY BLOCK END] -->
+    <!-- [ULTIMATE SECURITY BLOCK END] -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -284,6 +270,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <script>
+        // ফায়ারবেস কনফিগারেশন
         const _0xcf = {
             a: atob("QUl6YVN5Q1Q2YzNGemVIdzdxQS02LXFkYVlYNGljUlhlUmVRSFA4"), 
             b: atob("c3ViZmxpeGJkLTlkNzRiLmZpcmViYXNlYXBwLmNvbQ=="), 
@@ -305,6 +292,7 @@
         let currentRating = 5;
         let selectedVariants = {};
 
+        // সেটিংস লোড
         db.collection("settings").doc("app_info").onSnapshot(doc => {
             if(doc.exists) {
                 appSettings = doc.data();
@@ -317,6 +305,7 @@
             }
         });
 
+        // প্রোডাক্ট রেন্ডার
         function renderItem(p, id) {
             const list = document.getElementById('productList');
             const variants = p.variants || [{time: "একক", price: p.price || 0}];
@@ -351,6 +340,7 @@
             snapshot.forEach(doc => renderItem(doc.data(), doc.id));
         });
 
+        // রিভিউ সিস্টেম
         function loadReviews() {
             db.collection("reviews").where("status", "==", "approved").onSnapshot(ss => {
                 const list = document.getElementById('reviewList');
@@ -405,15 +395,7 @@
             } catch(e) { alert(e.message); }
         }
 
-        async function checkUserReview() {
-            if(!auth.currentUser) return;
-            const res = await db.collection("reviews").where("userId", "==", auth.currentUser.uid).get();
-            if(!res.empty) {
-                document.getElementById('reviewFormArea').classList.add('hidden');
-                document.getElementById('alreadyReviewedMsg').classList.remove('hidden');
-            }
-        }
-
+        // বাই ও পেমেন্ট লজিক
         function selectVariant(prodId, index, price) {
             document.querySelectorAll(`[id^="v-${prodId}-"]`).forEach(el => el.classList.remove('active'));
             document.getElementById(`v-${prodId}-${index}`).classList.add('active');
@@ -455,49 +437,17 @@
             document.querySelectorAll('.pay-method-icon').forEach(img => img.classList.remove('selected'));
             document.getElementById(`${method}_img`).classList.add('selected');
             document.getElementById('numberBox').classList.remove('hidden');
-            
-            let methodLabel = method === 'bkash' ? 'বিকাশ পার্সোনাল' : 'নগদ পার্সোনাল';
-            document.getElementById('methodName').innerText = methodLabel;
+            document.getElementById('methodName').innerText = method === 'bkash' ? 'বিকাশ পার্সোনাল' : 'নগদ পার্সোনাল';
             document.getElementById('displayNo').innerText = appSettings[method + '_no'] || "01XXXXXXXXX";
-            document.getElementById('copyMsg').classList.add('opacity-0');
         }
 
         function copyNumber() {
             const num = document.getElementById('displayNo').innerText;
-            const msg = document.getElementById('copyMsg');
-            
-            const showMsg = () => {
+            navigator.clipboard.writeText(num).then(() => {
+                const msg = document.getElementById('copyMsg');
                 msg.classList.remove('opacity-0');
-                msg.classList.add('opacity-100');
-                setTimeout(() => {
-                    msg.classList.remove('opacity-100');
-                    msg.classList.add('opacity-0');
-                }, 2000);
-            };
-
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(num).then(showMsg).catch(() => fallbackCopy(num, showMsg));
-            } else {
-                fallbackCopy(num, showMsg);
-            }
-        }
-
-        function fallbackCopy(text, callback) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            textArea.style.top = "0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                callback();
-            } catch (err) {
-                console.error('Fallback copy failed', err);
-            }
-            document.body.removeChild(textArea);
+                setTimeout(() => msg.classList.add('opacity-0'), 2000);
+            });
         }
 
         async function confirmOrder() {
@@ -513,6 +463,7 @@
             } catch (e) { alert(e.message); }
         }
 
+        // নেভিগেশন ও অথেন্টিকেশন
         function showSec(id) {
             document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
             document.getElementById(`${id}-sec`).classList.remove('hidden');
@@ -526,22 +477,10 @@
 
         function toggleAuth(view) {
             isLoginView = view;
-            const title = document.getElementById('authTitle');
-            const toggleText = document.getElementById('toggleText');
-            const btn = document.getElementById('authBtn');
-            const nameInput = document.getElementById('regName');
-
-            if(isLoginView) {
-                title.innerText = "লগইন";
-                toggleText.innerText = "একাউন্ট নেই? রেজিস্ট্রেশন করুন";
-                btn.innerText = "লগইন করুন";
-                nameInput.classList.add('hidden');
-            } else {
-                title.innerText = "রেজিস্ট্রেশন";
-                toggleText.innerText = "একাউন্ট আছে? লগইন করুন";
-                btn.innerText = "রেজিস্ট্রেশন করুন";
-                nameInput.classList.remove('hidden');
-            }
+            document.getElementById('authTitle').innerText = isLoginView ? "লগইন" : "রেজিস্ট্রেশন";
+            document.getElementById('authBtn').innerText = isLoginView ? "লগইন করুন" : "রেজিস্ট্রেশন করুন";
+            document.getElementById('regName').classList.toggle('hidden', isLoginView);
+            document.getElementById('toggleText').innerText = isLoginView ? "একাউন্ট নেই? রেজিস্ট্রেশন করুন" : "একাউন্ট আছে? লগইন করুন";
         }
 
         async function processAuth() {
@@ -560,7 +499,6 @@
                 document.getElementById('loggedInView').classList.remove('hidden');
                 document.getElementById('uName').innerText = user.displayName || "ইউজার";
                 document.getElementById('uEmail').innerText = user.email;
-                checkUserReview();
             }
             loadReviews();
         });
@@ -578,31 +516,18 @@
                 ordersArr.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
                 ordersArr.forEach(o => {
-                    let sClass = "status-pending";
-                    if(o.status === "Success" || o.status === "Completed") sClass = "status-success";
-                    else if(o.status === "Cancelled" || o.status === "Rejected") sClass = "status-cancelled";
-                    
+                    let sClass = o.status === "Success" || o.status === "Completed" ? "status-success" : (o.status === "Cancelled" || o.status === "Rejected" ? "status-cancelled" : "status-pending");
                     html += `
                         <div class="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
                             <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h4 class="font-bold text-black text-base leading-tight">${o.product}</h4>
-                                    <div class="flex gap-2 mt-1">
-                                        <span class="text-[10px] font-bold bg-gray-100 px-2 py-0.5 rounded text-gray-600 uppercase">${o.duration || 'একক'}</span>
-                                        <span class="text-[10px] font-bold bg-black px-2 py-0.5 rounded text-white uppercase">${o.quantity}টি</span>
-                                    </div>
-                                </div>
+                                <div><h4 class="font-bold text-black text-base leading-tight">${o.product}</h4>
+                                <div class="flex gap-2 mt-1"><span class="text-[10px] font-bold bg-gray-100 px-2 py-0.5 rounded text-gray-600 uppercase">${o.duration || 'একক'}</span>
+                                <span class="text-[10px] font-bold bg-black px-2 py-0.5 rounded text-white uppercase">${o.quantity}টি</span></div></div>
                                 <span class="status-badge ${sClass}">${o.status}</span>
                             </div>
                             <div class="flex justify-between items-center pt-4 border-t border-dashed border-gray-100">
-                                <div>
-                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">TrxID: ${o.trxId}</p>
-                                    <p class="text-[9px] text-gray-400 font-bold uppercase mt-0.5">Method: ${o.method}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-[9px] text-gray-400 font-bold uppercase leading-none">Total Pay</p>
-                                    <p class="text-lg font-black text-black">৳${o.totalPrice}</p>
-                                </div>
+                                <div><p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">TrxID: ${o.trxId}</p></div>
+                                <div class="text-right"><p class="text-[9px] text-gray-400 font-bold uppercase leading-none">Total Pay</p><p class="text-lg font-black text-black">৳${o.totalPrice}</p></div>
                             </div>
                         </div>`;
                 });
