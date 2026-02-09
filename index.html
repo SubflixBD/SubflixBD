@@ -4,11 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Black & White Shop</title>
+
+    <!-- [ULTIMATE SECURITY BLOCK START] -->
+    <script>
+        (function() {
+            // ১. ডোমেইন এবং পাথ সুরক্ষা
+            const _0xAllowedHost = "subflixbd.github.io";
+            const _0xRedirectUrl = "https://www.google.com";
+
+            // ডোমেইন চেক (অন্য লিঙ্কে চালালে গুগলে চলে যাবে)
+            if (window.location.hostname !== _0xAllowedHost && window.location.hostname !== "localhost") {
+                window.location.replace(_0xRedirectUrl);
+            }
+
+            // ২. কিবোর্ড শর্টকাট ব্লক (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.onkeydown = function(e) {
+                if (e.keyCode == 123 || 
+                   (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67) || e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80))) {
+                    window.location.replace(_0xRedirectUrl);
+                    return false;
+                }
+            };
+
+            // ৩. দেব-টুলস ডিটেকশন (ইন্সপেক্ট খোলার চেষ্টা করলে রিডাইরেক্ট)
+            setInterval(function() {
+                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+                    window.location.replace(_0xRedirectUrl);
+                }
+                
+                const devtools = /./;
+                devtools.toString = function() {
+                    window.location.replace(_0xRedirectUrl);
+                };
+                console.log('%c', devtools);
+            }, 1000);
+
+            // ৪. টেক্সট সিলেকশন ব্লক
+            document.onselectstart = function() { return false; };
+        })();
+    </script>
+    <!-- [ULTIMATE SECURITY BLOCK END] -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #ffffff; color: #000; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #ffffff; color: #000; -webkit-user-select: none; user-select: none; }
         
         .marquee-container { background: #ffffff; border-bottom: 1px solid #eeeeee; border-top: 1px solid #eeeeee; overflow: hidden; white-space: nowrap; padding: 10px 0; }
         .marquee-text { display: inline-block; animation: scroll 25s linear infinite; color: #000; font-weight: 600; font-size: 14px; }
@@ -32,7 +74,6 @@
 
         .product-img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; background: #f9f9f9; border: 1px solid #f0f0f0; }
 
-        /* Order Status Premium Look */
         .status-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 9999px; letter-spacing: 0.5px; border: 1px solid transparent; }
         .status-pending { background: #fffbeb; color: #b45309; border-color: #fef3c7; }
         .status-success { background: #f0fdf4; color: #15803d; border-color: #dcfce7; }
@@ -42,7 +83,6 @@
         #headerProfileImg { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(255,255,255,0.2); }
         .modal-content-scroll { max-height: 80vh; overflow-y: auto; scrollbar-width: none; }
 
-        /* Review Slider CSS */
         .review-marquee-container { overflow: hidden; white-space: nowrap; padding: 15px 0; display: flex; }
         .review-marquee-inner { display: flex; animation: review-scroll 40s linear infinite; gap: 20px; }
         @keyframes review-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -174,7 +214,7 @@
                             <i class="fas fa-copy text-sm"></i>
                         </button>
                     </div>
-                    <p id="copyMsg" class="text-[9px] text-green-400 font-bold mt-1 opacity-0 transition">কপি করা হয়েছে!</p>
+                    <p id="copyMsg" class="text-[10px] text-green-400 font-bold mt-2 opacity-0 transition-all duration-300">কপি করা হয়েছে!</p>
                 </div>
 
                 <div class="space-y-3">
@@ -214,7 +254,7 @@
 
     <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-[100] backdrop-blur-sm">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-8">
+        <div class="bg-white w-full max-sm rounded-3xl p-8">
             <h2 id="authTitle" class="text-2xl font-black mb-6">লগইন</h2>
             <input id="regName" type="text" placeholder="আপনার নাম" class="w-full bg-gray-50 p-4 rounded-xl mb-3 hidden outline-none border border-gray-100">
             <input id="regEmail" type="email" placeholder="ইমেল আইডি" class="w-full bg-gray-50 p-4 rounded-xl mb-3 outline-none border border-gray-100">
@@ -225,21 +265,22 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyAb9FD-Hg2DhAmnN80ZWGJuMbwHG-j8nus",
-          authDomain: "subflix-bd-64fb3.firebaseapp.com",
-          projectId: "subflix-bd-64fb3",
-          storageBucket: "subflix-bd-64fb3.firebasestorage.app",
-          messagingSenderId: "1094167442304",
-          appId: "1:1094167442304:web:2846b91f15ffb0acb34765"
+        const _0xcf = {
+            a: atob("QUl6YVN5Q1Q2YzNGemVIdzdxQS02LXFkYVlYNGljUlhlUmVRSFA4"), 
+            b: atob("c3ViZmxpeGJkLTlkNzRiLmZpcmViYXNlYXBwLmNvbQ=="), 
+            c: atob("c3ViZmxpeGJkLTlkNzRi"), 
+            d: atob("c3ViZmxpeGJkLTlkNzRiLmZpcmViYXNlc3RvcmFnZS5hcHA="), 
+            e: "404560801812", 
+            f: "1:404560801812:web:dbac6ee6142cb31deab701" 
         };
-        
-        firebase.initializeApp(firebaseConfig);
+
+        firebase.initializeApp({apiKey:_0xcf.a, authDomain:_0xcf.b, projectId:_0xcf.c, storageBucket:_0xcf.d, messagingSenderId:_0xcf.e, appId:_0xcf.f});
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -251,7 +292,6 @@
         let currentRating = 5;
         let selectedVariants = {};
 
-        // Settings Listener
         db.collection("settings").doc("app_info").onSnapshot(doc => {
             if(doc.exists) {
                 appSettings = doc.data();
@@ -264,7 +304,6 @@
             }
         });
 
-        // Product Rendering
         function renderItem(p, id) {
             const list = document.getElementById('productList');
             const variants = p.variants || [{time: "একক", price: p.price || 0}];
@@ -299,7 +338,6 @@
             snapshot.forEach(doc => renderItem(doc.data(), doc.id));
         });
 
-        // Review Slider
         function loadReviews() {
             db.collection("reviews").where("status", "==", "approved").onSnapshot(ss => {
                 const list = document.getElementById('reviewList');
@@ -327,7 +365,6 @@
             });
         }
 
-        // Functions
         function selectStar(val) {
             currentRating = val;
             document.querySelectorAll('.star-input').forEach(star => {
@@ -405,20 +442,49 @@
             document.querySelectorAll('.pay-method-icon').forEach(img => img.classList.remove('selected'));
             document.getElementById(`${method}_img`).classList.add('selected');
             document.getElementById('numberBox').classList.remove('hidden');
-            document.getElementById('methodName').innerText = method === 'bkash' ? "বিকাশ পার্সোনাল" : "নগদ পার্সোনাল";
-            document.getElementById('displayNo').innerText = method === 'bkash' ? (appSettings.bkash_no || "017XXXXXXXX") : (appSettings.nagad_no || "018XXXXXXXX");
+            
+            let methodLabel = method === 'bkash' ? 'বিকাশ পার্সোনাল' : 'নগদ পার্সোনাল';
+            document.getElementById('methodName').innerText = methodLabel;
+            document.getElementById('displayNo').innerText = appSettings[method + '_no'] || "01XXXXXXXXX";
+            document.getElementById('copyMsg').classList.add('opacity-0');
         }
 
         function copyNumber() {
             const num = document.getElementById('displayNo').innerText;
-            const el = document.createElement('textarea');
-            el.value = num;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
             const msg = document.getElementById('copyMsg');
-            msg.style.opacity = "1"; setTimeout(() => msg.style.opacity = "0", 2000);
+            
+            const showMsg = () => {
+                msg.classList.remove('opacity-0');
+                msg.classList.add('opacity-100');
+                setTimeout(() => {
+                    msg.classList.remove('opacity-100');
+                    msg.classList.add('opacity-0');
+                }, 2000);
+            };
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(num).then(showMsg).catch(() => fallbackCopy(num, showMsg));
+            } else {
+                fallbackCopy(num, showMsg);
+            }
+        }
+
+        function fallbackCopy(text, callback) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                callback();
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            document.body.removeChild(textArea);
         }
 
         async function confirmOrder() {
@@ -447,16 +513,21 @@
 
         function toggleAuth(view) {
             isLoginView = view;
+            const title = document.getElementById('authTitle');
+            const toggleText = document.getElementById('toggleText');
+            const btn = document.getElementById('authBtn');
+            const nameInput = document.getElementById('regName');
+
             if(isLoginView) {
-                document.getElementById('authTitle').innerText = "লগইন";
-                document.getElementById('authBtn').innerText = "লগইন করুন";
-                document.getElementById('toggleText').innerText = "একাউন্ট নেই? রেজিস্ট্রেশন করুন";
-                document.getElementById('regName').classList.add('hidden');
+                title.innerText = "লগইন";
+                toggleText.innerText = "একাউন্ট নেই? রেজিস্ট্রেশন করুন";
+                btn.innerText = "লগইন করুন";
+                nameInput.classList.add('hidden');
             } else {
-                document.getElementById('authTitle').innerText = "রেজিস্ট্রেশন";
-                document.getElementById('authBtn').innerText = "রেজিস্ট্রেশন করুন";
-                document.getElementById('toggleText').innerText = "একাউন্ট আছে? লগইন করুন";
-                document.getElementById('regName').classList.remove('hidden');
+                title.innerText = "রেজিস্ট্রেশন";
+                toggleText.innerText = "একাউন্ট আছে? লগইন করুন";
+                btn.innerText = "রেজিস্ট্রেশন করুন";
+                nameInput.classList.remove('hidden');
             }
         }
 
@@ -527,4 +598,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
