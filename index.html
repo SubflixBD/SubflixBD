@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Black & White Shop</title>
 
-    <!-- [ULTIMATE SECURITY BLOCK START] -->
+    <!-- [ULTIMATE PROTECTION BLOCK START] -->
     <script>
         (function() {
-            // ১. ডোমেইন সুরক্ষা (শুধুমাত্র subflixbd.github.io তে চলবে)
-            const _0xAllowedHost = "subflixbd.github.io";
             const _0xRedirectUrl = "https://www.google.com";
 
-            if (window.location.hostname !== _0xAllowedHost && window.location.hostname !== "localhost") {
-                window.location.replace(_0xRedirectUrl);
-            }
+            // ১. মাউসের রাইট ক্লিক এবং টেক্সট সিলেকশন ব্লক
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.onselectstart = function() { return false; };
 
             // ২. কিবোর্ড শর্টকাট ব্লক (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+S)
-            document.addEventListener('contextmenu', e => e.preventDefault());
             document.onkeydown = function(e) {
                 if (e.keyCode == 123 || 
                    (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67) || e.keyCode == 85 || e.keyCode == 83 || e.keyCode == 80))) {
@@ -26,7 +23,7 @@
                 }
             };
 
-            // ৩. দেব-টুলস ডিটেকশন
+            // ৩. দেব-টুলস ডিটেকশন (ইন্সপেক্ট খোলার চেষ্টা করলে রিডাইরেক্ট)
             setInterval(function() {
                 if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
                     window.location.replace(_0xRedirectUrl);
@@ -38,12 +35,9 @@
                 };
                 console.log('%c', devtools);
             }, 1000);
-
-            // ৪. টেক্সট সিলেকশন ব্লক
-            document.onselectstart = function() { return false; };
         })();
     </script>
-    <!-- [ULTIMATE SECURITY BLOCK END] -->
+    <!-- [ULTIMATE PROTECTION BLOCK END] -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -270,7 +264,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // ফায়ারবেস কনফিগারেশন
+        // Firebase Config (Base64 Encoded for light protection)
         const _0xcf = {
             a: atob("QUl6YVN5Q1Q2YzNGemVIdzdxQS02LXFkYVlYNGljUlhlUmVRSFA4"), 
             b: atob("c3ViZmxpeGJkLTlkNzRiLmZpcmViYXNlYXBwLmNvbQ=="), 
@@ -292,7 +286,7 @@
         let currentRating = 5;
         let selectedVariants = {};
 
-        // সেটিংস লোড
+        // Load Settings
         db.collection("settings").doc("app_info").onSnapshot(doc => {
             if(doc.exists) {
                 appSettings = doc.data();
@@ -305,7 +299,7 @@
             }
         });
 
-        // প্রোডাক্ট রেন্ডার
+        // Product Rendering
         function renderItem(p, id) {
             const list = document.getElementById('productList');
             const variants = p.variants || [{time: "একক", price: p.price || 0}];
@@ -340,7 +334,7 @@
             snapshot.forEach(doc => renderItem(doc.data(), doc.id));
         });
 
-        // রিভিউ সিস্টেম
+        // Review Logic
         function loadReviews() {
             db.collection("reviews").where("status", "==", "approved").onSnapshot(ss => {
                 const list = document.getElementById('reviewList');
@@ -395,7 +389,16 @@
             } catch(e) { alert(e.message); }
         }
 
-        // বাই ও পেমেন্ট লজিক
+        async function checkUserReview() {
+            if(!auth.currentUser) return;
+            const res = await db.collection("reviews").where("userId", "==", auth.currentUser.uid).get();
+            if(!res.empty) {
+                document.getElementById('reviewFormArea').classList.add('hidden');
+                document.getElementById('alreadyReviewedMsg').classList.remove('hidden');
+            }
+        }
+
+        // Buy & Pay Logic
         function selectVariant(prodId, index, price) {
             document.querySelectorAll(`[id^="v-${prodId}-"]`).forEach(el => el.classList.remove('active'));
             document.getElementById(`v-${prodId}-${index}`).classList.add('active');
@@ -439,14 +442,16 @@
             document.getElementById('numberBox').classList.remove('hidden');
             document.getElementById('methodName').innerText = method === 'bkash' ? 'বিকাশ পার্সোনাল' : 'নগদ পার্সোনাল';
             document.getElementById('displayNo').innerText = appSettings[method + '_no'] || "01XXXXXXXXX";
+            document.getElementById('copyMsg').classList.add('opacity-0');
         }
 
         function copyNumber() {
             const num = document.getElementById('displayNo').innerText;
+            const msg = document.getElementById('copyMsg');
             navigator.clipboard.writeText(num).then(() => {
-                const msg = document.getElementById('copyMsg');
                 msg.classList.remove('opacity-0');
-                setTimeout(() => msg.classList.add('opacity-0'), 2000);
+                msg.classList.add('opacity-100');
+                setTimeout(() => { msg.classList.remove('opacity-100'); msg.classList.add('opacity-0'); }, 2000);
             });
         }
 
@@ -463,7 +468,7 @@
             } catch (e) { alert(e.message); }
         }
 
-        // নেভিগেশন ও অথেন্টিকেশন
+        // Section Navigation
         function showSec(id) {
             document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
             document.getElementById(`${id}-sec`).classList.remove('hidden');
@@ -499,6 +504,7 @@
                 document.getElementById('loggedInView').classList.remove('hidden');
                 document.getElementById('uName').innerText = user.displayName || "ইউজার";
                 document.getElementById('uEmail').innerText = user.email;
+                checkUserReview();
             }
             loadReviews();
         });
